@@ -1,40 +1,52 @@
 from PIL import Image, ImageDraw, ImageFont
+import os
+from random import choice as choiceImageFrom
 
-# Load the image file
-img_path = '/mnt/data/image.png'
-img = Image.open(img_path)
+def image_creation(text_title):
+    """
+    Creates an Image by saving it in a PNG file,
+    :param text_title: title of the image
+    :return: Path of image
+    """
+    # Ensure the Resources directory path is correct
+    resources_path = "Resources"
+    if not os.path.isdir(resources_path):
+        raise ValueError(f"Directory not found: {resources_path}")
 
-# Define the text to overlay on the image
-text_title = "Game Loops in World of Warcraft: Part 2 of 2"
-text_footer = "yukaichou.com"
+    # Load the image file
+    img_path = os.path.join(resources_path, choiceImageFrom(os.listdir(resources_path)))
+    img = Image.open(img_path)
 
-# Define font size and color
-font_size = 50
-font_color = (255, 255, 255)  # White color
+    # Define font size and color
+    font_size = 50
+    font_color = (255, 255, 255)  # White color
 
-# Define font object (standard PIL font)
-font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
-font_title = ImageFont.truetype(font_path, font_size)
-font_footer = ImageFont.truetype(font_path, int(font_size / 2))
+    # Define font object (standard PIL font)
+    font_path = "font/dejavu-sans/DejaVuSans-Bold.ttf"
+    font_title = ImageFont.truetype(font_path, font_size)
 
-# Calculate text size and position
-draw = ImageDraw.Draw(img)
-text_width, text_height = draw.textsize(text_title, font=font_title)
-text_x = (img.width - text_width) / 2
-text_y = img.height * 0.1  # 10% from the top
+    # Calculate text length
+    text_length = font_title.getlength(text_title)  # Width of the text
 
-# Calculate footer position
-footer_width, footer_height = draw.textsize(text_footer, font=font_footer)
-footer_x = (img.width - footer_width) / 2
-footer_y = img.height - footer_height - img.height * 0.05  # 5% from the bottom
+    # Calculate text height (font size * number of lines)
+    num_lines = text_title.count('\n') + 1  # Count the number of newline characters
+    text_height = font_size * num_lines
 
-# Draw text on image
-draw.text((text_x, text_y), text_title, font=font_title, fill=font_color)
-draw.text((footer_x, footer_y), text_footer, font=font_footer, fill=font_color)
+    # Calculate text position
+    text_x = (img.width - text_length) / 2
+    text_y = (img.height - text_height) / 2
 
-# Save the new image
-new_img_path = '/mnt/data/annotated_image.png'
-img.save(new_img_path)
+    # Create draw object
+    draw = ImageDraw.Draw(img)
 
-# Return the path to the saved image
-new_img_path
+    # Draw text on image
+    draw.text((text_x, text_y), text_title, font=font_title, fill=font_color)
+
+    # Define the path for saving the new image
+    new_img_path = f'Images/{text_title}.png'
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(new_img_path), exist_ok=True)
+
+    img.save(new_img_path)  # Save the new image
+
+    return new_img_path
