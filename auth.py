@@ -3,9 +3,9 @@ import base64
 def authorization():
 
     # Configuration
-    WORDPRESS_URL = "{site url}"
-    USERNAME = "{user}"
-    PASSWORD = "{wp application password}"
+    WORDPRESS_URL = ("[Web site url]")
+    USERNAME = "[user name]"
+    PASSWORD = "[app password]"
     AUTH = base64.b64encode(f"{USERNAME}:{PASSWORD}".encode()).decode("utf-8")
 
     return AUTH, WORDPRESS_URL

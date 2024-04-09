@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
 import textwrap
+from random import choice as ChoseImage
 
 def image_creation(text_title):
     """
@@ -14,7 +15,7 @@ def image_creation(text_title):
         raise ValueError(f"Directory not found: {resources_path}")
 
     # Load a random image from the resources directory
-    img_path = os.path.join(resources_path, os.listdir(resources_path)[0])  # Simplified for demonstration
+    img_path = os.path.join(resources_path, ChoseImage(os.listdir(resources_path)))
     img = Image.open(img_path)
 
     draw = ImageDraw.Draw(img)
@@ -40,6 +41,9 @@ def image_creation(text_title):
 
     # Define path for saving the new image
     new_img_path = f'Images/{text_title}.png'
+    new_img_path = new_img_path.replace("?", "")
+    new_img_path = new_img_path.replace("&#038;", "and")
+
     os.makedirs(os.path.dirname(new_img_path), exist_ok=True)
     img.save(new_img_path)
 
